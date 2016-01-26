@@ -236,15 +236,16 @@ class Cursor(object):
 
     def closed(self):
         return self._closed or self.connection.closed()
-
+    
     def row_formatter(self, row_data):
-        if not self.cursor_type:
+        if self.cursor_type is None:
             return self.format_row_as_array(row_data)
-        elif self.cursor_type == 'list':
+        elif self.cursor_type in ('list', list):
             return self.format_row_as_array(row_data)
-        elif self.cursor_type == 'dict':
+        elif self.cursor_type in ('dict', dict):
             return self.format_row_as_dict(row_data)
-            # throw some error
+        else:
+            raise Exception("Unrecognized cursor type: %r" % self.cursor_type)
 
     def format_row_as_dict(self, row_data):
         return dict(
